@@ -1,10 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  // Enable if you're using experimental features
-  // experimental: {
-  //   serverActions: true,
-  // },
+  experimental: {
+    outputFileTracingRoot: undefined,
+    outputFileTracingExcludes: {
+      '*': [
+        'node_modules/@swc/core-linux-x64-gnu',
+        'node_modules/@swc/core-linux-x64-musl',
+        'node_modules/@esbuild/linux-x64',
+      ],
+    },
+  },
+  images: {
+    unoptimized: true,
+  },
 };
 
 module.exports = nextConfig; 
