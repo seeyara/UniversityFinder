@@ -14,6 +14,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  httpAgentOptions: {
+    keepAlive: true,
+  },
 };
 
 module.exports = nextConfig; 

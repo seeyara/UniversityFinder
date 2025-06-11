@@ -699,7 +699,7 @@ export default function StudyAbroadQuiz() {
                   <div>
                     <p><span className="font-medium">Duration:</span> {program['Abroad Course Duration'] || 'Not specified'}</p>
                     <p>
-                      <span className="font-medium">Fee:</span> {formatCurrency(program['Abroad Course Fee'])}
+                      <span className="font-medium">Fee:</span> {formatCurrency(program['Total Course Fee (INR)'])}
                       <span className="text-sm text-gray-500 ml-2">
                         (Original: {program['Abroad Course Fee']})
                       </span>

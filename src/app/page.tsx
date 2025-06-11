@@ -2,201 +2,83 @@ import React from 'react';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import Image from 'next/image';
+import TrustIndicators from './components/TrustIndicators';
+import ValueComparison from './components/ValueComparison';
+import SuccessStories from './components/SuccessStories';
+import UniversityCard from './components/UniversityCard';
+import { Search, GraduationCap, Globe, TrendingUp, Users, Shield, Calculator, Star, MapPin, Clock, DollarSign } from "lucide-react";
+
+// Sample university data
+const sampleUniversity = {
+  id: 1,
+  name: "Clark University",
+  course: "MS in Computer Science",
+  country: "USA",
+  duration: "2 Years",
+  hybridModel: "1st year online + 1 year on campus",
+  matchScore: 95,
+  originalFee: "₹45 Lakhs",
+  hybridFee: "₹18 Lakhs",
+  savings: "₹27 Lakhs",
+  successRate: "96%",
+  avgSalary: "₹85 LPA",
+  location: "Massachusetts, USA",
+  highlights: [
+    "Work while studying",
+    "3 years OPT",
+    "Industry partnerships",
+    "Placement support"
+  ]
+};
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center bg-white">
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Column - Text Content */}
-            <div className="text-left">
-              <div className="inline-block px-4 py-2 rounded-full bg-primary-50 text-primary-700 mb-6">
-                <span className="text-sm font-medium">Your Journey Starts Here</span>
-              </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-900 mb-6 leading-tight">
-                Dreaming of Studying Abroad?
-              </h1>
-              <p className="text-xl text-gray-600 mb-8 max-w-xl">
-                Let us guide you to your perfect university match. Join 10,000+ successful students who made their global education dreams come true.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/quiz">
-                  <Button size="lg" variant="primary" className="bg-primary-600 text-white hover:bg-primary-700 w-full sm:w-auto">
-                    Start Your Journey
-                  </Button>
-                </Link>
-                <Link href="/contact">
-                  <Button size="lg" variant="secondary" className="bg-white border-2 border-primary-600 text-primary-600 hover:bg-primary-50 w-full sm:w-auto">
-                    Talk to an Expert
-                  </Button>
-                </Link>
-              </div>
-              <div className="mt-12 grid grid-cols-3 gap-8">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-primary-600 mb-2">98%</div>
-                  <div className="text-sm text-gray-600">Success Rate</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-primary-600 mb-2">5min</div>
-                  <div className="text-sm text-gray-600">Quick Assessment</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-primary-600 mb-2">10k+</div>
-                  <div className="text-sm text-gray-600">Success Stories</div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Right Column - Visual Element */}
-            <div className="relative hidden lg:block">
-              <div className="relative w-full aspect-square rounded-2xl overflow-hidden">
-                <Image
-                  src="/College%20Kids%20Running%20Around.png"
-                  alt="College students enjoying campus life"
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
 
-      {/* Services Section */}
-      <section className="py-20 px-4 bg-primary-800">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-white">
-            Your Path to Global Success
-          </h2>
-          <p className="text-xl text-primary-100 text-center mb-12 max-w-3xl mx-auto">
-            We don't just help you get admitted - we ensure you thrive in your international education journey
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <div key={index} className="p-6 rounded-lg border border-primary-700 bg-primary-900 hover:shadow-lg transition-shadow">
-                <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-4">
-                  {service.icon}
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-white">{service.title}</h3>
-                <p className="text-primary-100">{service.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-            Success Stories
-          </h2>
-          <p className="text-lg text-gray-600 text-center mb-12 max-w-2xl mx-auto">
-            Join thousands of students who transformed their careers through international education
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-gray-50 rounded-2xl p-8 relative">
-                <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
-                  <div className="w-24 h-24 rounded-full bg-primary-100 flex items-center justify-center overflow-hidden">
-                    <div className="w-full h-full bg-gray-200">
-                      {/* Image placeholder - will be replaced with actual images */}
-                      <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-16 text-center">
-                  <h4 className="font-semibold text-lg mb-1">{testimonial.name}</h4>
-                  <p className="text-primary-600 font-medium mb-3">{testimonial.university}</p>
-                  <p className="text-gray-600 italic text-sm">"{testimonial.quote.split('.')[0]}..."</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 px-4 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-            Why Students Choose Us
-          </h2>
-          <p className="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-            Join thousands of successful students who transformed their careers through our guidance
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-       
-
-      {/* Quiz CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h2 className="text-3xl md:text-4xl font-bold">
-                Discover Your Perfect University Match
+      {/* Hero Section with Search Results Header */}
+      <section className="bg-gradient-to-r from-blue-600 to-green-600 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold mb-4">
+              International Master's Degree Finder
+            </h1>
+            <p className="text-xl mb-6 text-blue-100">
+              Transform Your Career with Affordable Global Education
+            </p>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 sm:p-6 max-w-4xl mx-auto shadow-xl">
+              <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                Your Personalized Program Matches
               </h2>
-              <p className="text-lg text-gray-600">
-                Our AI-powered assessment analyzes your profile and matches you with universities where you have the highest chances of admission and success.
-              </p>
-              <ul className="space-y-4">
-                {[
-                  "Personalized university recommendations based on your profile",
-                  "Detailed analysis of admission requirements and chances",
-                  "Scholarship opportunities and financial aid guidance",
-                  "Post-study work opportunities and career prospects"
-                ].map((feature, index) => (
-                  <li key={index} className="flex items-center gap-3">
-                    <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="pt-4">
-                <Link href="/quiz">
-                  <Button size="lg" variant="primary">
-                    Start Your Assessment
-                  </Button>
-                </Link>
-              </div>
-            </div>
-            <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-xl">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-800 to-primary-900">
-                <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center text-white p-8">
-                  <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
+              <div className="backdrop-blur-md rounded-lg p-4 flex flex-col sm:flex-row items-center justify-center sm:justify-center gap-4 sm:gap-12">
+                <div className="flex items-center justify-center">
+                  <div className="bg-blue-500/20 rounded-full p-2 mr-3 sm:hidden">
+                    <MapPin className="h-5 w-5 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-4">Quick & Accurate Assessment</h3>
-                  <p className="text-white/80">
-                    Get personalized university recommendations in just 5 minutes. Our AI analyzes thousands of successful applications to find your best matches.
-                  </p>
+                  <div>
+                    <span className="text-white font-medium whitespace-nowrap">Vishakhapatnam, India</span>
+                  </div>
+                </div>
+
+                <div className="h-px w-full sm:h-8 sm:w-px bg-white/10 sm:mx-2"></div>
+
+                <div className="flex items-center justify-center">
+                  <div className="bg-green-500/20 rounded-full p-2 mr-3 sm:hidden">
+                    <Search className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <span className="text-white font-medium">Affordable Computer Science & AI programs</span>
+                  </div>
+                </div>
+
+                <div className="h-px w-full sm:h-8 sm:w-px bg-white/10 sm:mx-2"></div>
+
+                <div className="flex items-center justify-center">
+                  <div className="bg-purple-500/20 rounded-full p-2 mr-3 sm:hidden">
+                    <TrendingUp className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <span className="text-white font-medium whitespace-nowrap">High Match Quality</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -204,22 +86,73 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="py-20 px-4 bg-primary-800 text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Ready to Transform Your Future?
-          </h2>
-          <p className="text-xl mb-8">
-            Book a free consultation with our experts and take the first step towards your global education journey.
-          </p>
-          <Link href="/contact">
-            <Button size="lg" variant="secondary" className="bg-white text-primary-900 hover:bg-gray-100">
-              Book Free Consultation
-            </Button>
-          </Link>
+      {/* Trust Indicators Section */}
+      <TrustIndicators />
+
+      {/* Value Comparison Section */}
+      <ValueComparison />
+
+      {/* Featured University Section */}
+      <section className="py-5 bg-gradient-to-br from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Featured University Program
+            </h2>
+            <p className="text-xl text-gray-600">
+              Discover our most popular hybrid program that combines quality education with affordability
+            </p>
+          </div>
+          <UniversityCard university={sampleUniversity} rank={1} />
         </div>
       </section>
+
+      {/* Success Stories Section */}
+      <SuccessStories />
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center mb-4">
+                <GraduationCap className="h-6 w-6 text-blue-400" />
+                <span className="ml-2 font-bold text-lg">EduSailor Global</span>
+              </div>
+              <p className="text-gray-400">
+                Connecting Vishakhapatnam's talent with global opportunities through affordable education.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Quick Links</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white">Find Universities</a></li>
+                <li><a href="#" className="hover:text-white">Success Stories</a></li>
+                <li><a href="#" className="hover:text-white">Cost Calculator</a></li>
+                <li><a href="#" className="hover:text-white">Career Guidance</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Support</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white">Free Counseling</a></li>
+                <li><a href="#" className="hover:text-white">Application Help</a></li>
+                <li><a href="#" className="hover:text-white">Visa Assistance</a></li>
+                <li><a href="#" className="hover:text-white">Job Placement</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Contact</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>4th Floor, Potluri Castle</li>
+                <li>Dwaraka Nagar, Visakhapatnam, AP 530016</li>
+                <li>contact@EduSailorglobal.com</li>
+                <li>+91 (891) 234-5678</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
