@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Users, CheckCircle, TrendingUp, Link, ArrowRight, Search } from "lucide-react";
+import { Shield, Users, CheckCircle, TrendingUp, Link as LinkIcon, ArrowRight, Search } from "lucide-react";
+import Link from "next/link";
 
 const TrustIndicators = () => {
   const indicators = [
@@ -83,7 +84,7 @@ const TrustIndicators = () => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/quiz">
-            <Button className="bg-white text-blue-600 hover:bg-blue-50">
+            <Button className="bg-blue-500 text-blue-600 hover:bg-blue-50">
               <Search className="h-5 w-5 mr-2" />
               Take Eligibility Quiz
             </Button>
