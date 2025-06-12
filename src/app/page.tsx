@@ -1,12 +1,11 @@
 import React from 'react';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
-import Image from 'next/image';
 import TrustIndicators from './components/TrustIndicators';
 import ValueComparison from './components/ValueComparison';
 import SuccessStories from './components/SuccessStories';
 import UniversityCard from './components/UniversityCard';
-import { Search, GraduationCap, Globe, TrendingUp, Users, Shield, Calculator, Star, MapPin, Clock, DollarSign } from "lucide-react";
+import { Search, GraduationCap, TrendingUp, MapPin, ArrowRight } from "lucide-react";
 
 // Sample university data
 const sampleUniversity = {
@@ -45,13 +44,25 @@ export default function Home() {
             <p className="text-xl mb-6 text-blue-100">
               Transform Your Career with Affordable Global Education
             </p>
+
+            {/* Quick Quiz CTA */}
+            <div className="mb-6">
+              <Link href="/quiz">
+                <Button className="bg-blue-500 text-white">
+                  Find the perfect university by
+                  <br></br> Taking a 2-Min Quiz
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
+              </Link>
+            </div>
+
             <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 sm:p-6 max-w-4xl mx-auto shadow-xl">
               <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
                 Your Personalized Program Matches
               </h2>
-              <div className="backdrop-blur-md rounded-lg p-4 flex flex-col sm:flex-row items-center justify-center sm:justify-center gap-4 sm:gap-12">
-                <div className="flex items-center justify-center">
-                  <div className="bg-blue-500/20 rounded-full p-2 mr-3 sm:hidden">
+              <div className="rounded-lg p-4 flex flex-col sm:flex-row items-center justify-center sm:justify-center gap-4 sm:gap-12">
+                <div className="flex items-center">
+                  <div className="bg-blue-500/20 rounded-full p-2 mr-3">
                     <MapPin className="h-5 w-5 text-white" />
                   </div>
                   <div>
@@ -62,7 +73,7 @@ export default function Home() {
                 <div className="h-px w-full sm:h-8 sm:w-px bg-white/10 sm:mx-2"></div>
 
                 <div className="flex items-center justify-center">
-                  <div className="bg-green-500/20 rounded-full p-2 mr-3 sm:hidden">
+                  <div className="bg-green-500/20 rounded-full p-2 mr-3">
                     <Search className="h-5 w-5 text-white" />
                   </div>
                   <div>
@@ -73,7 +84,7 @@ export default function Home() {
                 <div className="h-px w-full sm:h-8 sm:w-px bg-white/10 sm:mx-2"></div>
 
                 <div className="flex items-center justify-center">
-                  <div className="bg-purple-500/20 rounded-full p-2 mr-3 sm:hidden">
+                  <div className="bg-purple-500/20 rounded-full p-2 mr-3">
                     <TrendingUp className="h-5 w-5 text-white" />
                   </div>
                   <div>
@@ -106,6 +117,18 @@ export default function Home() {
           <UniversityCard university={sampleUniversity} rank={1} />
         </div>
       </section>
+
+      <div className="bg-gradient-to-r from-green-500 to-blue-600 rounded-lg p-4 max-w-2xl mx-auto mb-6 text-center">
+        <p className="text-white font-medium mb-2 ">
+          Class education at affordable prices. Get ahead of the curve today
+        </p>
+        <Link href="/quiz">
+          <Button variant="outline" className="border-blue-600 text-white">
+            Find universities best for you
+            <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
+        </Link>
+      </div>
 
       {/* Success Stories Section */}
       <SuccessStories />

@@ -10,6 +10,7 @@ const nextConfig = {
         'node_modules/@esbuild/linux-x64',
       ],
     },
+    serverComponentsExternalPackages: ['googleapis']
   },
   images: {
     unoptimized: true,
@@ -17,6 +18,10 @@ const nextConfig = {
   httpAgentOptions: {
     keepAlive: true,
   },
+  webpack: (config) => {
+    config.externals = [...(config.externals || []), 'canvas', 'jsdom'];
+    return config;
+  }
 };
 
 module.exports = nextConfig; 

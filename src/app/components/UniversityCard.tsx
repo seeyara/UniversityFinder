@@ -1,8 +1,7 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Star, MapPin, Clock, DollarSign, TrendingUp, Shield, Users, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { MapPin, Clock, DollarSign, TrendingUp, Shield, Users, CheckCircle } from "lucide-react";
 
 interface University {
   id: number;
@@ -58,20 +57,22 @@ const UniversityCard = ({ university, rank }: UniversityCardProps) => {
                   <span>{university.duration} Program</span>
                 </div>
               </div>
-              <div className="flex items-center justify-between p-3 bg-green-100 rounded-lg">
-            <div className="flex items-center">
-              <Shield className="h-5 w-5 text-green-600 mr-2" />
-              <span className="font-medium text-green-800">Job Success Rate</span>
-            </div>
-            <span className="font-bold text-green-700">{university.successRate}</span>
-          </div>
-          <div className="flex items-center justify-between p-3 bg-blue-100 rounded-lg">
-            <div className="flex items-center">
-              <TrendingUp className="h-5 w-5 text-blue-600 mr-2" />
-              <span className="font-medium text-blue-800">Average Starting Salary</span>
-            </div>
-            <span className="font-bold text-blue-700">{university.avgSalary}</span>
-          </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center justify-between p-3 bg-green-100 rounded-lg">
+                  <div className="flex items-center">
+                    <Shield className="h-5 w-5 text-green-600 mr-2" />
+                    <span className="font-medium text-green-800">Job Success Rate</span>
+                  </div>
+                  <span className="font-bold text-green-700">{university.successRate}</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-blue-100 rounded-lg">
+                  <div className="flex items-center">
+                    <TrendingUp className="h-5 w-5 text-blue-600 mr-2" />
+                    <span className="font-medium text-blue-800">Average Starting Salary</span>
+                  </div>
+                  <span className="font-bold text-blue-700">{university.avgSalary}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -111,7 +112,7 @@ const UniversityCard = ({ university, rank }: UniversityCardProps) => {
 
         {/* Success Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-         
+
         </div>
 
         {/* Highlights */}

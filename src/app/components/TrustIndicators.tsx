@@ -1,5 +1,6 @@
+import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Users, Star, CheckCircle, TrendingUp, Award } from "lucide-react";
+import { Shield, Users, CheckCircle, TrendingUp, Link, ArrowRight, Search } from "lucide-react";
 
 const TrustIndicators = () => {
   const indicators = [
@@ -52,7 +53,7 @@ const TrustIndicators = () => {
             India's trusted platform for affordable international education
           </p>
         </div>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {indicators.map((indicator, index) => {
             const Icon = indicator.icon;
@@ -74,6 +75,22 @@ const TrustIndicators = () => {
           })}
         </div>
       </div>
+
+      <div className="mt-16 mb-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-2xl p-8 text-white text-center">
+        <h3 className="text-2xl font-bold mb-4">Ready to Transform Your Career?</h3>
+        <p className="text-lg mb-6 text-green-100">
+          Join 1,000+ professionals who've successfully transitioned to international careers
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link href="/quiz">
+            <Button className="bg-white text-blue-600 hover:bg-blue-50">
+              <Search className="h-5 w-5 mr-2" />
+              Take Eligibility Quiz
+            </Button>
+          </Link>
+        </div>
+      </div>
+
     </section>
   );
 };

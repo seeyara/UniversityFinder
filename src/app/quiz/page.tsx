@@ -4,6 +4,16 @@ import { useState, useEffect } from 'react';
 import * as Papa from 'papaparse';
 import _ from 'lodash';
 import * as XLSX from 'xlsx';
+import { Badge } from "@/components/ui/badge";
+import { 
+  Briefcase, 
+  MapPin, 
+  GraduationCap, 
+  Clock, 
+  DollarSign, 
+  TrendingUp,
+  CheckCircle 
+} from "lucide-react";
 
 // Add type declaration for window.fs
 declare global {
@@ -39,6 +49,7 @@ interface UserResponses {
   onlinePreference: boolean;
   highestEducation: string;
   expectedScore: string;
+  phoneNumber: string;
   [key: string]: string | string[] | boolean;
 }
 
@@ -70,6 +81,7 @@ export default function StudyAbroadQuiz() {
   const [results, setResults] = useState<Course[]>([]);
   const [loading, setLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [showPhoneForm, setShowPhoneForm] = useState(false);
   const [courseData, setCourseData] = useState<Course[]>([]);
   const [availableCountries, setAvailableCountries] = useState<string[]>([]);
   const [userResponses, setUserResponses] = useState<UserResponses>({
@@ -80,7 +92,8 @@ export default function StudyAbroadQuiz() {
     budget: '',
     onlinePreference: false,
     highestEducation: '',
-    expectedScore: ''
+    expectedScore: '',
+    phoneNumber: ''
   });
 
   // Fetching and processing the XLSX data
@@ -93,26 +106,26 @@ export default function StudyAbroadQuiz() {
         if (!response.ok) {
           throw new Error(`Failed to load XLSX file: ${response.statusText}`);
         }
-        
+
         const arrayBuffer = await response.arrayBuffer();
         const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-        
+
         let allCourses: Course[] = [];
-        
+
         // Process each sheet (country)
         workbook.SheetNames.forEach(sheetName => {
           const worksheet = workbook.Sheets[sheetName];
           const data = XLSX.utils.sheet_to_json<Course>(worksheet);
-          
+
           // Add country information to each record
           const coursesWithCountry = data.map(course => ({
             ...course,
             country: sheetName
           }));
-          
+
           allCourses = [...allCourses, ...coursesWithCountry];
         });
-        
+
         console.log('Total courses loaded:', allCourses.length);
         console.log('Available countries:', workbook.SheetNames);
         setCourseData(allCourses);
@@ -122,7 +135,7 @@ export default function StudyAbroadQuiz() {
         setLoading(false);
       }
     };
-    
+
     loadFile();
   }, []);
 
@@ -132,19 +145,19 @@ export default function StudyAbroadQuiz() {
       const countryDegrees = courseData.reduce((acc, course) => {
         const country = course.country;
         const courseLevel = course['Course Level']?.toLowerCase() || '';
-        
+
         if (!acc[country]) {
           acc[country] = new Set();
         }
-        
+
         if (courseLevel.includes('bachelor') || courseLevel.includes('b.sc') || courseLevel.includes('b.eng')) {
           acc[country].add('Bachelors');
         }
-        if (courseLevel.includes('master') || courseLevel.includes('m.sc') || courseLevel.includes('m.eng') || 
-            courseLevel.includes('msc') || courseLevel.includes('mba')) {
+        if (courseLevel.includes('master') || courseLevel.includes('m.sc') || courseLevel.includes('m.eng') ||
+          courseLevel.includes('msc') || courseLevel.includes('mba')) {
           acc[country].add('Masters');
         }
-        
+
         return acc;
       }, {} as Record<string, Set<string>>);
 
@@ -156,7 +169,7 @@ export default function StudyAbroadQuiz() {
   // Get available countries based on selected degree level
   const getAvailableCountries = () => {
     if (!userResponses.degreeLevel) return [];
-    
+
     return availableCountries
       .filter(country => {
         const countryCourses = courseData.filter(course => course.country === country);
@@ -165,24 +178,24 @@ export default function StudyAbroadQuiz() {
           if (userResponses.degreeLevel === 'Bachelors') {
             return courseLevel.includes('bachelor') || courseLevel.includes('b.sc') || courseLevel.includes('b.eng');
           } else {
-            return courseLevel.includes('master') || courseLevel.includes('m.sc') || 
-                   courseLevel.includes('m.eng') || courseLevel.includes('msc') || courseLevel.includes('mba');
+            return courseLevel.includes('master') || courseLevel.includes('m.sc') ||
+              courseLevel.includes('m.eng') || courseLevel.includes('msc') || courseLevel.includes('mba');
           }
         });
         return hasMatchingDegree;
       })
       .sort((a, b) => {
         // Count courses for each country
-        const countA = courseData.filter(course => 
-          course.country === a && 
+        const countA = courseData.filter(course =>
+          course.country === a &&
           course['Course Level']?.toLowerCase().includes(userResponses.degreeLevel.toLowerCase())
         ).length;
-        
-        const countB = courseData.filter(course => 
-          course.country === b && 
+
+        const countB = courseData.filter(course =>
+          course.country === b &&
           course['Course Level']?.toLowerCase().includes(userResponses.degreeLevel.toLowerCase())
         ).length;
-        
+
         // Sort in descending order
         return countB - countA;
       });
@@ -216,8 +229,8 @@ export default function StudyAbroadQuiz() {
       question: 'Which regions are you interested in studying?',
       options: getAvailableCountries().map(country => ({
         value: country,
-        label: `${country} (${courseData.filter(course => 
-          course.country === country && 
+        label: `${country} (${courseData.filter(course =>
+          course.country === country &&
           course['Course Level']?.toLowerCase().includes(userResponses.degreeLevel?.toLowerCase() || '')
         ).length} programs)`
       })),
@@ -235,7 +248,7 @@ export default function StudyAbroadQuiz() {
     },
     {
       id: 'budget',
-      question: 'What is your approximate budget for tuition fees?',
+      question: 'What is your approximate budget for the degree?',
       options: [
         { value: 'low', label: 'Less than ₹15,00,000' },
         { value: 'medium', label: '₹15,00,000 - ₹25,00,000' },
@@ -256,9 +269,29 @@ export default function StudyAbroadQuiz() {
     },
     {
       id: 'expectedScore',
-      question: 'What is your score/expected score? (Enter percentage)',
+      question: 'What is your score/expected score?',
       type: 'text',
-      placeholder: 'Enter your score (e.g., 85)'
+      placeholder: 'Enter percentage'
+    },
+    {
+      id: 'primaryCareerGoal',
+      question: 'What is your primary career goal?',
+      options: [
+        { value: 'salaryIncrease', label: 'Significant Salary Increase' },
+        { value: 'careerOps', label: 'Better career opportunities' },
+        { value: 'intlWorkExp', label: 'International work experience' },
+        { value: 'settleAbroad', label: 'Permanently settle abroad' }
+      ],
+    },
+    {
+      id: 'familySituation',
+      question: 'What is your family situation?',
+      options: [
+        { value: 'single', label: 'Single - Can relocate easily' },
+        { value: 'married', label: 'Married - no children' },
+        { value: 'marriedWithChildren', label: 'Married - with children' },
+        { value: 'supportParents', label: 'Need to support parents/family' }
+      ],
     }
   ];
 
@@ -277,7 +310,7 @@ export default function StudyAbroadQuiz() {
       const newSelections = currentSelections.includes(value as string)
         ? currentSelections.filter(item => item !== value)
         : [...currentSelections, value as string];
-      
+
       setUserResponses(prev => ({
         ...prev,
         [questionId]: newSelections
@@ -293,10 +326,10 @@ export default function StudyAbroadQuiz() {
   // Format currency display
   const formatCurrency = (fee: string | number | undefined): string => {
     if (!fee) return 'Not specified';
-    
+
     const feeStr = fee.toString();
     let amount = 0;
-    
+
     // Helper function to extract number from string
     const extractNumber = (str: string): number => {
       const match = str.match(/[\d,.]+/);
@@ -321,7 +354,7 @@ export default function StudyAbroadQuiz() {
       // If no currency specified, assume USD
       amount = extractNumber(feeStr);
     }
-    
+
     // Convert USD to INR (1 USD = 85.43 INR)
     const inrAmount = amount * 85.43;
     return `₹${inrAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
@@ -332,8 +365,7 @@ export default function StudyAbroadQuiz() {
     if (step < questionPages.length - 1) {
       setStep(step + 1);
     } else {
-      let results = calculateResults();
-      console.log(results);
+      setShowPhoneForm(true);
     }
   };
 
@@ -347,7 +379,7 @@ export default function StudyAbroadQuiz() {
   const calculateResults = () => {
     setLoading(true);
     console.log('Starting calculation with userResponses:', userResponses);
-    
+
     const scoredPrograms = courseData.map(program => {
       let score = 0;
       // Adjusted weights to prioritize course, country, and budget
@@ -364,39 +396,39 @@ export default function StudyAbroadQuiz() {
       if (program['Abroad Course Name']) {
         const courseName = program['Abroad Course Name'].toLowerCase();
         const degreeType = (program['Abroad Course Type'] || '').toLowerCase();
-        
+
         if (userResponses.studyField === 'Business') {
           // For Business, check if it's MBA or other business program
-          if (courseName.includes('business administration') || 
-              courseName.includes('business management') ||
-              degreeType.includes('mba')) {
+          if (courseName.includes('business administration') ||
+            courseName.includes('business management') ||
+            degreeType.includes('mba')) {
             score += weights.fieldMatch * 1.5; // Higher weight for MBA
-          } else if (courseName.includes('business') || 
-                    courseName.includes('management') || 
-                    courseName.includes('finance')) {
+          } else if (courseName.includes('business') ||
+            courseName.includes('management') ||
+            courseName.includes('finance')) {
             score += weights.fieldMatch;
           }
         } else if (userResponses.studyField === 'DataScience') {
-          if (courseName.includes('data science') || 
-              courseName.includes('data analytics') || 
-              courseName.includes('business analytics') ||
-              courseName.includes('data engineering')) {
+          if (courseName.includes('data science') ||
+            courseName.includes('data analytics') ||
+            courseName.includes('business analytics') ||
+            courseName.includes('data engineering')) {
             score += weights.fieldMatch * 1.5; // Higher weight for exact matches
-          } else if (courseName.includes('data') || 
-                    courseName.includes('analytics') || 
-                    courseName.includes('statistics')) {
+          } else if (courseName.includes('data') ||
+            courseName.includes('analytics') ||
+            courseName.includes('statistics')) {
             score += weights.fieldMatch;
           }
         } else if (userResponses.studyField === 'ComputerScience') {
-          if (courseName.includes('computer science') || 
-              courseName.includes('software engineering') ||
-              courseName.includes('artificial intelligence') ||
-              courseName.includes('machine learning')) {
+          if (courseName.includes('computer science') ||
+            courseName.includes('software engineering') ||
+            courseName.includes('artificial intelligence') ||
+            courseName.includes('machine learning')) {
             score += weights.fieldMatch * 1.5; // Higher weight for exact matches
-          } else if (courseName.includes('computer') || 
-                    courseName.includes('software') || 
-                    courseName.includes('it') ||
-                    courseName.includes('information technology')) {
+          } else if (courseName.includes('computer') ||
+            courseName.includes('software') ||
+            courseName.includes('it') ||
+            courseName.includes('information technology')) {
             score += weights.fieldMatch;
           }
         } else if (userResponses.studyField === 'Engineering') {
@@ -408,14 +440,14 @@ export default function StudyAbroadQuiz() {
 
       // Score degree level match
       const degreeType = (program['Abroad Course Type'] || '').toLowerCase();
-      if (userResponses.degreeLevel === 'Bachelors' && 
-          (degreeType.includes('bachelor') || degreeType.includes('b.sc') || degreeType.includes('b.eng'))) {
+      if (userResponses.degreeLevel === 'Bachelors' &&
+        (degreeType.includes('bachelor') || degreeType.includes('b.sc') || degreeType.includes('b.eng'))) {
         score += weights.levelMatch;
       } else if (userResponses.degreeLevel === 'Masters') {
-        if (degreeType.includes('master') || 
-            degreeType.includes('m.sc') || 
-            degreeType.includes('m.eng') || 
-            degreeType.includes('msc')) {
+        if (degreeType.includes('master') ||
+          degreeType.includes('m.sc') ||
+          degreeType.includes('m.eng') ||
+          degreeType.includes('msc')) {
           score += weights.levelMatch;
         }
       }
@@ -434,14 +466,14 @@ export default function StudyAbroadQuiz() {
 
       // Score duration match
       const duration = program['Abroad Course Duration'] || '';
-      if (userResponses.duration === 'short' && 
-          (duration.includes('9 Months') || duration.includes('1 Year'))) {
+      if (userResponses.duration === 'short' &&
+        (duration.includes('9 Months') || duration.includes('1 Year'))) {
         score += weights.durationMatch;
-      } else if (userResponses.duration === 'medium' && 
-                (duration.includes('1 Year') || duration.includes('2 Year'))) {
+      } else if (userResponses.duration === 'medium' &&
+        (duration.includes('1 Year') || duration.includes('2 Year'))) {
         score += weights.durationMatch;
-      } else if (userResponses.duration === 'long' && 
-                (duration.includes('3 Year') || duration.includes('4 Year'))) {
+      } else if (userResponses.duration === 'long' &&
+        (duration.includes('3 Year') || duration.includes('4 Year'))) {
         score += weights.durationMatch;
       }
 
@@ -449,7 +481,7 @@ export default function StudyAbroadQuiz() {
       let fee = 0;
       if (program['Abroad Course Fee']) {
         const feeString = program['Abroad Course Fee'].toString();
-        
+
         // Helper function to extract number from string
         const extractNumber = (str: string): number => {
           const match = str.match(/[\d,.]+/);
@@ -478,7 +510,7 @@ export default function StudyAbroadQuiz() {
 
       // Convert USD to INR for budget comparison
       const inrFee = fee * 85.43;
-      
+
       // More granular budget scoring
       if (userResponses.budget === 'low') {
         if (inrFee < 1500000) {
@@ -506,7 +538,7 @@ export default function StudyAbroadQuiz() {
 
       // Score online preference match
       if ((userResponses.onlinePreference && program['Online Course Name']) ||
-          (!userResponses.onlinePreference && !program['Online Course Name'])) {
+        (!userResponses.onlinePreference && !program['Online Course Name'])) {
         score += weights.onlineMatch;
       }
 
@@ -519,26 +551,25 @@ export default function StudyAbroadQuiz() {
 
     // Sort all programs by score
     const sortedPrograms = _.orderBy(scoredPrograms, ['score'], ['desc']);
-    
+
     // Calculate the 20th percentile threshold
     const thresholdIndex = Math.floor(sortedPrograms.length * 0.2);
     const thresholdScore = sortedPrograms[thresholdIndex]?.score || 0;
-    
+
     // Filter programs above threshold and take top 5
     const topPrograms = sortedPrograms
       .filter(program => program.score >= thresholdScore)
       .slice(0, 5);
 
     console.log('Score statistics:', {
-      maxPossibleScore: 22.5, // Updated max score with new weights
+      maxPossibleScore: 22.5,
       thresholdScore,
       programsAboveThreshold: sortedPrograms.filter(p => p.score >= thresholdScore).length,
       totalPrograms: sortedPrograms.length
     });
-    
-    setResults(topPrograms);
-    setShowResults(true);
+
     setLoading(false);
+    return topPrograms;
   };
 
   // Reset quiz
@@ -551,31 +582,75 @@ export default function StudyAbroadQuiz() {
       budget: '',
       onlinePreference: false,
       highestEducation: '',
-      expectedScore: ''
+      expectedScore: '',
+      phoneNumber: ''
     });
     setStep(0);
     setShowResults(false);
   };
 
+  // Modify handlePhoneSubmit function
+  const handlePhoneSubmit = async () => {
+    if (!userResponses.phoneNumber || userResponses.phoneNumber.length < 10) {
+      alert('Please enter a valid phone number');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Calculate results first
+      const matchedPrograms = calculateResults();
+      
+      // Prepare data for API
+      const leadData = {
+        ...userResponses,
+        matchedPrograms: matchedPrograms.slice(0, 3), // Send top 3 matches
+        matchScore: matchedPrograms[0]?.score?.toFixed(1) || '0'
+      };
+
+      // Send to API
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(leadData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save lead');
+      }
+
+      // Set results and show them
+      setResults(matchedPrograms);
+      setShowResults(true);
+    } catch (error) {
+      console.error('Error submitting lead:', error);
+      alert('There was an error saving your information. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Render current page
   const renderCurrentPage = () => {
     const currentPageQuestions = questionPages[step];
-    
+
     return (
       <div className="bg-white p-6 rounded-lg shadow-md">
         {currentPageQuestions.map((question) => {
           // Update regions options if this is the regions question
-          const questionOptions = question.id === 'regions' 
+          const questionOptions = question.id === 'regions'
             ? getAvailableCountries().map(country => ({
-                value: country,
-                label: country
-              }))
+              value: country,
+              label: country
+            }))
             : question.options || [];
 
           return (
             <div key={question.id} className="mb-8 last:mb-0">
               <h2 className="text-xl font-bold mb-4">{question.question}</h2>
-              
+
               <div className="space-y-3">
                 {question.type === 'text' ? (
                   <div>
@@ -589,7 +664,6 @@ export default function StudyAbroadQuiz() {
                       placeholder={question.placeholder}
                       className="w-full p-3 border rounded-lg"
                     />
-                    <p className="text-sm text-gray-500 mt-1">Enter a number between 0 and 100</p>
                   </div>
                 ) : (
                   questionOptions.map((option) => {
@@ -634,24 +708,80 @@ export default function StudyAbroadQuiz() {
             </div>
           );
         })}
-        
+
         <div className="flex justify-between mt-6">
           <button
             onClick={handlePrevious}
             disabled={step === 0}
-            className={`px-4 py-2 rounded ${
-              step === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'
-            }`}
+            className={`px-4 py-2 rounded ${step === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'
+              }`}
           >
             Previous
           </button>
-          
+
           <button
             onClick={handleNext}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-4 py-2 bg-green-700 text-white rounded"
           >
-            {step === questionPages.length - 1 ? 'See Results' : 'Next'}
+            {step === questionPages.length - 1 ? 'Get My Results' : 'Next'}
           </button>
+        </div>
+      </div>
+    );
+  };
+
+  // Add phone collection component
+  const renderPhoneForm = () => {
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="text-center mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">One Last Step!</h2>
+          <p className="text-sm sm:text-base text-gray-600">
+            Enter your phone number to view your personalized program matches
+          </p>
+        </div>
+
+        <div className="max-w-md mx-auto">
+          <div className="mb-4">
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+              Phone Number
+            </label>
+            <div className="flex">
+              <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                +91
+              </span>
+              <input
+                type="tel"
+                id="phone"
+                value={userResponses.phoneNumber}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  setUserResponses(prev => ({ ...prev, phoneNumber: value }));
+                }}
+                placeholder="Enter your 10-digit number"
+                className="flex-1 min-w-0 block w-full px-3 py-2 rounded-r-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                maxLength={10}
+              />
+            </div>
+            <p className="mt-2 text-xs text-gray-500">
+              We'll send program details and counseling session information to this number
+            </p>
+          </div>
+
+          <div className="flex justify-between mt-6">
+            <button
+              onClick={() => setShowPhoneForm(false)}
+              className="px-4 py-2 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Back
+            </button>
+            <button
+              onClick={handlePhoneSubmit}
+              className="px-4 py-2 bg-green-700 text-white rounded text-sm font-medium hover:bg-green-800"
+            >
+              View My Matches
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -662,8 +792,13 @@ export default function StudyAbroadQuiz() {
     console.log('Rendering results:', results);
     return (
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-4">Your Personalized Program Matches</h2>
-        
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold mb-2">Your Personalized Program Matches</h2>
+          <p className="text-sm text-gray-600">
+            Results sent to: +91 {userResponses.phoneNumber}
+          </p>
+        </div>
+
         {results.length === 0 ? (
           <div>
             <p>No matching programs found based on your preferences.</p>
@@ -684,49 +819,69 @@ export default function StudyAbroadQuiz() {
                 Showing programs in the top 20% of matches. Maximum possible match score is 22.5.
               </p>
             </div>
-            
+
             {results.map((program, index) => (
-              <div key={index} className="border-b pb-4 last:border-0">
-                <h3 className="text-xl font-semibold">
-                  {index + 1}. {program['Abroad University'] || 'Unnamed Program'}
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
-                  <div>
-                    <p><span className="font-medium">Course Name:</span> {program['Abroad Course Name'] || 'Not specified'}</p>
-                    <p><span className="font-medium">Country:</span> {program.country || 'Not specified'}</p>
-                    <p><span className="font-medium">Degree:</span> {program['Abroad Course Type'] || 'Not specified'}</p>
+              <div key={index} className="bg-white rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 border-2 hover:border-blue-300 overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-50 to-green-50 p-4 sm:p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Badge variant="secondary" className="text-base sm:text-lg font-bold">
+                      #{index + 1}
+                    </Badge>
+                    <h3 className="text-lg sm:text-2xl font-bold text-gray-900">
+                      {program['Abroad University'] || 'Unnamed Program'}
+                    </h3>
                   </div>
-                  <div>
-                    <p><span className="font-medium">Duration:</span> {program['Abroad Course Duration'] || 'Not specified'}</p>
-                    <p>
-                      <span className="font-medium">Fee:</span> {formatCurrency(program['Total Course Fee (INR)'])}
-                      <span className="text-sm text-gray-500 ml-2">
-                        (Original: {program['Abroad Course Fee']})
-                      </span>
-                    </p>
-                    <p>
-                      <span className="font-medium">Match Score:</span> {program.score?.toFixed(1) || 'Not scored'}
-                      <span className="text-sm text-gray-500 ml-2">
-                        ({(program.score ? (program.score / 22.5 * 100).toFixed(0) : 0)}% match)
-                      </span>
-                    </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <div className="flex items-center text-gray-700 mb-2 text-sm sm:text-base">
+                        <Briefcase className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <span className="font-medium">Course:</span>
+                        <span className="ml-2 truncate">{program['Abroad Course Name'] || 'Not specified'}</span>
+                      </div>
+                      <div className="flex items-center text-gray-700 mb-2 text-sm sm:text-base">
+                        <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <span className="font-medium">Location:</span>
+                        <span className="ml-2">{program.country || 'Not specified'}</span>
+                      </div>
+                      <div className="flex items-center text-gray-700 text-sm sm:text-base">
+                        <GraduationCap className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <span className="font-medium">Degree:</span>
+                        <span className="ml-2">{program['Abroad Course Type'] || 'Not specified'}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex items-center text-gray-700 mb-2 text-sm sm:text-base">
+                        <Clock className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <span className="font-medium">Duration:</span>
+                        <span className="ml-2">{program['Abroad Course Duration'] || 'Not specified'}</span>
+                      </div>
+                      <div className="flex items-center text-gray-700 mb-2 text-sm sm:text-base">
+                        <DollarSign className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <span className="font-medium">Fee:</span>
+                        <span className="ml-2">{formatCurrency(program['Total Course Fee (INR)'])}</span>
+                        <span className="text-xs sm:text-sm text-gray-500 ml-2">
+                          (Original: {program['Abroad Course Fee']})
+                        </span>
+                      </div>
+                      <div className="flex items-center text-sm sm:text-base">
+                        <TrendingUp className="h-4 w-4 mr-2 text-blue-600 flex-shrink-0" />
+                        <span className="font-medium">Match Score:</span>
+                        <span className="ml-2 font-semibold text-blue-600">
+                          {program.score?.toFixed(1) || 'Not scored'}
+                        </span>
+                        <Badge variant="secondary" className="ml-2 text-xs sm:text-sm">
+                          {(program.score ? (program.score / 22.5 * 100).toFixed(0) : 0)}% match
+                        </Badge>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                
-                {program['Online Course Name'] && (
-                  <div className="mt-2 p-2 bg-blue-50 rounded">
-                    <p className="text-sm">
-                      <span className="font-medium">Online Component:</span> {program['Online Course Name']} 
-                      ({program['Online Course Duration'] || 'Duration not specified'}, 
-                      {formatCurrency(program['Online Course Fee'])})
-                    </p>
-                  </div>
-                )}
               </div>
             ))}
           </div>
         )}
-        
+
         <div className="mt-6">
           <button
             onClick={resetQuiz}
@@ -740,9 +895,11 @@ export default function StudyAbroadQuiz() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
-      <h1 className="text-3xl font-bold text-center mb-6">International Master's Degree Finder</h1>
-      
+    <div className="ml-2 text-xl font-bold">
+      <h1 className="text-3xl font-bold text-center text-white mb-6 bg-gradient-to-r from-blue-600 to-green-600 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 p-4">
+        International Master's Degree Finder
+      </h1>
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <div className="text-center">
@@ -752,6 +909,8 @@ export default function StudyAbroadQuiz() {
         </div>
       ) : showResults ? (
         renderResults()
+      ) : showPhoneForm ? (
+        renderPhoneForm()
       ) : (
         <div>
           <div className="mb-6">
@@ -759,9 +918,8 @@ export default function StudyAbroadQuiz() {
               {questionPages.map((_, i) => (
                 <div
                   key={i}
-                  className={`h-2 flex-1 mx-1 rounded-full ${
-                    i <= step ? 'bg-blue-500' : 'bg-gray-300'
-                  }`}
+                  className={`h-2 flex-1 mx-1 rounded-full ${i <= step ? 'bg-blue-500' : 'bg-gray-300'
+                    }`}
                 ></div>
               ))}
             </div>
@@ -769,10 +927,17 @@ export default function StudyAbroadQuiz() {
               Question {step + 1} of {questionPages.length}
             </p>
           </div>
-          
+
           {renderCurrentPage()}
         </div>
       )}
+
+      <div className="mt-8 text-center">
+        <p className="text-sm text-gray-600">
+          🔒 Your information is completely secure and confidential
+        </p>
+      </div>
+
     </div>
   );
 }
