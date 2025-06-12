@@ -210,7 +210,7 @@ export default function Results() {
 
                 <div className="flex justify-end">
                   <Button
-                    variant="primary"
+                    variant="default"
                     onClick={() => {
                       // TODO: Implement finance options modal/page
                       console.log('Finance options for:', uni.name);
@@ -227,13 +227,13 @@ export default function Results() {
         {/* Action Buttons */}
         <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link href="/contact">
-            <Button size="lg" variant="primary">
+            <Button variant="default" className="px-6 py-3 text-lg">
               Schedule Consultation
             </Button>
           </Link>
           <Button 
-            size="lg" 
-            variant="secondary"
+            variant="outline"
+            className="px-6 py-3 text-lg"
             onClick={() => {
               const report = {
                 quizData,

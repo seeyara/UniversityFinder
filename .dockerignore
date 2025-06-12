@@ -1,8 +1,15 @@
 .git
-.gitignore
 node_modules
-npm-debug.log
-README.md
+.next
+*.md
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+coverage
+.vscode
+
+.gitignore
 .next
 
 
