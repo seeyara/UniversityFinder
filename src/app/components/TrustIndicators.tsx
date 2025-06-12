@@ -84,7 +84,7 @@ const TrustIndicators = () => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/quiz">
-            <Button className="bg-blue-500 text-blue-600 hover:bg-blue-50">
+            <Button className="bg-blue-500 text-white hover:bg-blue-600">
               <Search className="h-5 w-5 mr-2" />
               Take Eligibility Quiz
             </Button>
