@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Users, CheckCircle, TrendingUp, Link, ArrowRight, Search } from "lucide-react";
+import { Shield, Users, CheckCircle, TrendingUp, Link as LinkIcon, ArrowRight, Search } from "lucide-react";
+import Link from "next/link";
 
 const TrustIndicators = () => {
   const indicators = [
@@ -54,11 +55,11 @@ const TrustIndicators = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="justify-items-center grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {indicators.map((indicator, index) => {
             const Icon = indicator.icon;
             return (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow duration-300">
+              <Card key={index} className="text-center hover:shadow-lg transition-shadow duration-300 w-full max-w-[300px]">
                 <CardContent className="p-4 pt-5">
                   <div className={`inline-flex items-center justify-center w-12 h-12 rounded-full mb-3 ${getColorClasses(indicator.color)}`}>
                     <Icon className="h-6 w-6" />
@@ -83,7 +84,7 @@ const TrustIndicators = () => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/quiz">
-            <Button className="bg-white text-blue-600 hover:bg-blue-50">
+            <Button className="bg-blue-500 text-white hover:bg-blue-600">
               <Search className="h-5 w-5 mr-2" />
               Take Eligibility Quiz
             </Button>

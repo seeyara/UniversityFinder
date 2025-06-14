@@ -21,6 +21,14 @@ export async function POST(request: Request) {
       private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY || '',
     };
 
+    // Debug environment variables (don't log full private key)
+    console.log('Environment variables check:', { 
+      hasClientEmail: !!credentials.client_email,
+      clientEmailLength: credentials.client_email?.length || 0,
+      hasPrivateKey: !!credentials.private_key,
+      privateKeyLength: credentials.private_key?.length || 0,
+    });
+
     if (!credentials.client_email || !credentials.private_key) {
       console.error('Missing credentials:', { 
         hasClientEmail: !!credentials.client_email,

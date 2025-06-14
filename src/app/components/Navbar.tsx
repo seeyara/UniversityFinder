@@ -14,10 +14,12 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
           <div className="flex justify-between items-center h-14 sm:h-16">
             <div className="flex items-center">
-              <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 flex-shrink-0" />
-              <span className="ml-1.5 sm:ml-2 text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent truncate">
-                EduSailor
-              </span>
+              <Link href="/" className="flex items-center">
+                <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 flex-shrink-0" />
+                <span className="ml-1.5 sm:ml-2 text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent truncate">
+                  EduSailor
+                </span>
+              </Link>
             </div>
             <div className="hidden md:flex space-x-6 lg:space-x-8">
               <Link href="/" className="text-gray-700 hover:text-blue-600 font-medium text-sm lg:text-base">Home</Link>
