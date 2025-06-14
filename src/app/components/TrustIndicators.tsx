@@ -55,11 +55,11 @@ const TrustIndicators = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="justify-items-center grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {indicators.map((indicator, index) => {
             const Icon = indicator.icon;
             return (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow duration-300">
+              <Card key={index} className="text-center hover:shadow-lg transition-shadow duration-300 w-full max-w-[300px]">
                 <CardContent className="p-4 pt-5">
                   <div className={`inline-flex items-center justify-center w-12 h-12 rounded-full mb-3 ${getColorClasses(indicator.color)}`}>
                     <Icon className="h-6 w-6" />
