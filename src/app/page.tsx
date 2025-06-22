@@ -46,12 +46,12 @@ export default function Home() {
             </p>
 
             {/* Quick Quiz CTA */}
+
             <div className="mb-6">
               <Link href="/quiz">
-                <Button className="bg-blue-500 text-white hover:bg-blue-600">
-                  Find the perfect university by
-                  <br></br> Taking a 2-Min Quiz
-                  <ArrowRight className="h-5 w-5 ml-2" />
+                <Button variant="outline" className="bg-white border-blue-600 text-blue-600">
+                  Find universities best for you
+                  <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               </Link>
             </div>
