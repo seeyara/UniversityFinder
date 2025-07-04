@@ -26,6 +26,7 @@ export default function Navbar() {
               <Link href="/about" className="text-gray-700 hover:text-blue-600 font-medium text-sm lg:text-base">About</Link>
               <Link href="/success-stories" className="text-gray-700 hover:text-blue-600 font-medium text-sm lg:text-base">Success Stories</Link>
               <Link href="/contact" className="text-gray-700 hover:text-blue-600 font-medium text-sm lg:text-base">Contact</Link>
+              <Link href="/privacy-policy" className="text-gray-700 hover:text-blue-600 font-medium text-sm lg:text-base">Privacy Policy</Link>
             </div>
 
             {/* Mobile menu button */}
@@ -93,6 +94,13 @@ export default function Navbar() {
               onClick={() => setIsOpen(false)}
             >
               Contact
+            </Link>
+            <Link 
+              href="/privacy-policy" 
+              className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium"
+              onClick={() => setIsOpen(false)}
+            >
+              Privacy Policy
             </Link>
           </div>
         </div>

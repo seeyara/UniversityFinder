@@ -149,10 +149,9 @@ export default function Home() {
             <div>
               <h3 className="font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">Find Universities</a></li>
-                <li><a href="#" className="hover:text-white">Success Stories</a></li>
-                <li><a href="#" className="hover:text-white">Cost Calculator</a></li>
-                <li><a href="#" className="hover:text-white">Career Guidance</a></li>
+                <li><Link href="/quiz" className="hover:text-white">Find Universities</Link></li>
+                <li><Link href="/success-stories" className="hover:text-white">Success Stories</Link></li>
+                <li><Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link></li>
               </ul>
             </div>
             <div>
