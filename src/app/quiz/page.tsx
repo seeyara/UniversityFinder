@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
 
-import * as Papa from 'papaparse';
 import _ from 'lodash';
 import * as XLSX from 'xlsx';
 import { Badge } from "@/components/ui/badge";
@@ -11,8 +10,7 @@ import {
   GraduationCap, 
   Clock, 
   DollarSign, 
-  TrendingUp,
-  CheckCircle 
+  TrendingUp
 } from "lucide-react";
 
 // Add type declaration for window.fs
@@ -45,7 +43,7 @@ interface UserResponses {
   degreeLevel: string;
   regions: string[];
   duration: string;
-  budget: string;
+  budget: string[];
   onlinePreference: boolean;
   highestEducation: string;
   expectedScore: string;
@@ -89,7 +87,7 @@ export default function StudyAbroadQuiz() {
     degreeLevel: '',
     regions: [],
     duration: '',
-    budget: '',
+    budget: [],
     onlinePreference: false,
     highestEducation: '',
     expectedScore: '',
@@ -248,13 +246,13 @@ export default function StudyAbroadQuiz() {
     },
     {
       id: 'budget',
-      question: 'What is your approximate budget for the degree?',
+      question: 'What is your approximate budget for the degree? (Select all that apply)',
       options: [
         { value: 'low', label: 'Less than ₹15,00,000' },
         { value: 'medium', label: '₹15,00,000 - ₹25,00,000' },
         { value: 'high', label: 'More than ₹25,00,000' }
       ],
-      type: 'radio'
+      type: 'checkbox'
     },
     {
       id: 'highestEducation',
@@ -362,6 +360,14 @@ export default function StudyAbroadQuiz() {
 
   // Navigate between quiz steps
   const handleNext = () => {
+    // Validate required fields for step 0 (study field and degree level)
+    if (step === 0) {
+      if (!userResponses.studyField || !userResponses.degreeLevel) {
+        alert('Please select both Study Field and Degree Level before proceeding.');
+        return;
+      }
+    }
+    
     if (step < questionPages.length - 1) {
       setStep(step + 1);
     } else {
@@ -511,30 +517,44 @@ export default function StudyAbroadQuiz() {
       // Convert USD to INR for budget comparison
       const inrFee = fee * 85.43;
 
-      // More granular budget scoring
-      if (userResponses.budget === 'low') {
+      // Score budget match based on selected budget ranges
+      let budgetScore = 0;
+      const selectedBudgets = userResponses.budget || [];
+      
+      if (selectedBudgets.includes('low')) {
         if (inrFee < 1500000) {
-          score += weights.budgetMatch;
+          budgetScore += weights.budgetMatch;
         } else if (inrFee < 2000000) {
-          score += weights.budgetMatch * 0.5; // Partial score for slightly over budget
+          budgetScore += weights.budgetMatch * 0.5; // Partial score for slightly over budget
         } else {
-          score -= weights.budgetMatch * 0.5; // Penalty for significantly over budget
-        }
-      } else if (userResponses.budget === 'medium') {
-        if (inrFee >= 1500000 && inrFee <= 2500000) {
-          score += weights.budgetMatch;
-        } else if (inrFee < 2000000 || inrFee <= 3000000) {
-          score += weights.budgetMatch * 0.5; // Partial score for slightly out of range
-        } else {
-          score -= weights.budgetMatch * 0.5; // Penalty for significantly out of range
-        }
-      } else if (userResponses.budget === 'high') {
-        if (inrFee > 2500000) {
-          score += weights.budgetMatch;
-        } else if (inrFee > 2000000) {
-          score += weights.budgetMatch * 0.5; // Partial score for slightly under budget
+          budgetScore -= weights.budgetMatch * 0.5; // Penalty for significantly over budget
         }
       }
+      
+      if (selectedBudgets.includes('medium')) {
+        if (inrFee >= 1500000 && inrFee <= 2500000) {
+          budgetScore += weights.budgetMatch;
+        } else if (inrFee < 2000000 || inrFee <= 3000000) {
+          budgetScore += weights.budgetMatch * 0.5; // Partial score for slightly out of range
+        } else {
+          budgetScore -= weights.budgetMatch * 0.5; // Penalty for significantly out of range
+        }
+      }
+      
+      if (selectedBudgets.includes('high')) {
+        if (inrFee > 2500000) {
+          budgetScore += weights.budgetMatch;
+        } else if (inrFee > 2000000) {
+          budgetScore += weights.budgetMatch * 0.5; // Partial score for slightly under budget
+        }
+      }
+      
+      // If no budget preferences selected, give neutral score
+      if (selectedBudgets.length === 0) {
+        budgetScore = weights.budgetMatch * 0.5; // Neutral score
+      }
+      
+      score += budgetScore;
 
       // Score online preference match
       if ((userResponses.onlinePreference && program['Online Course Name']) ||
@@ -579,7 +599,7 @@ export default function StudyAbroadQuiz() {
       degreeLevel: '',
       regions: [],
       duration: '',
-      budget: '',
+      budget: [],
       onlinePreference: false,
       highestEducation: '',
       expectedScore: '',
@@ -649,7 +669,12 @@ export default function StudyAbroadQuiz() {
 
           return (
             <div key={question.id} className="mb-8 last:mb-0">
-              <h2 className="text-xl font-bold mb-4">{question.question}</h2>
+              <h2 className="text-xl font-bold mb-4">
+                {question.question}
+                {(step === 0 && (question.id === 'studyField' || question.id === 'degreeLevel')) && (
+                  <span className="text-red-500 ml-1">*</span>
+                )}
+              </h2>
 
               <div className="space-y-3">
                 {question.type === 'text' ? (
@@ -721,7 +746,12 @@ export default function StudyAbroadQuiz() {
 
           <button
             onClick={handleNext}
-            className="px-4 py-2 bg-green-700 text-white rounded"
+            disabled={step === 0 && (!userResponses.studyField || !userResponses.degreeLevel)}
+            className={`px-4 py-2 rounded ${
+              step === 0 && (!userResponses.studyField || !userResponses.degreeLevel)
+                ? 'bg-gray-300 cursor-not-allowed'
+                : 'bg-green-700 text-white hover:bg-green-800'
+            }`}
           >
             {step === questionPages.length - 1 ? 'Get My Results' : 'Next'}
           </button>
@@ -896,7 +926,7 @@ export default function StudyAbroadQuiz() {
 
   return (
     <div className="ml-2 text-xl font-bold">
-      <h1 className="text-3xl font-bold text-center text-white mb-6 bg-gradient-to-r from-blue-600 to-green-600 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 p-4">
+      <h1 className="text-3xl font-bold text-center text-white mb-6 bg-gradient-to-r from-blue-600 to-green-600 max-w-6xl mx-auto px-2 sm:px-4 lg:px-6 p-4">
         International Master's Degree Finder
       </h1>
 
@@ -908,11 +938,15 @@ export default function StudyAbroadQuiz() {
           </div>
         </div>
       ) : showResults ? (
-        renderResults()
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-6">
+          {renderResults()}
+        </div>
       ) : showPhoneForm ? (
-        renderPhoneForm()
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-6">
+          {renderPhoneForm()}
+        </div>
       ) : (
-        <div>
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-6">
           <div className="mb-6">
             <div className="flex justify-between mb-2">
               {questionPages.map((_, i) => (

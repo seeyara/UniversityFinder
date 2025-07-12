@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Users, CheckCircle, TrendingUp, Link as LinkIcon, ArrowRight, Search } from "lucide-react";
+import { Shield, Users, CheckCircle, TrendingUp, Link as Search } from "lucide-react";
 import Link from "next/link";
 
 const TrustIndicators = () => {
