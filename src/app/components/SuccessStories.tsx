@@ -24,7 +24,7 @@ const SuccessStories = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {successStories.map((story, index) => (
-            <Link key={index} href={`/success-stories/${slugify(story.name)}`} className="block h-full">
+            <Link key={index} href={`/success-stories`} className="block h-full">
               <Card className="h-full hover:shadow-xl transition-shadow duration-300 border-2 hover:border-blue-300 cursor-pointer">
                 <CardHeader className="bg-gradient-to-r from-blue-500 to-green-500 text-white">
                   <div className="flex items-center justify-between">

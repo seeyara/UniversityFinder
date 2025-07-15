@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     // Get credentials from environment variables
     const credentials = {
       client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
-      private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY || '',
+      private_key: (process.env.GOOGLE_SHEETS_PRIVATE_KEY  || '').replace(/\\n/g, '\n'),
     };
 
     if (!credentials.client_email || !credentials.private_key) {
